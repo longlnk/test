@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: controlcenter-svc
+  annotations:
+    field.cattle.io/targetWorkloadIds: '["deployment:{{.Release.Namespace}}:controlcenter"]'
+spec:
+  externalIPs:
+  - {{ .Values.service.controlcenter.externalIPs }}
+  ports:
+  - name: {{ .Values.service.controlcenter.namehttp }}
+    port: {{ .Values.service.controlcenter.http.port }}
+    protocol: {{ .Values.service.controlcenter.http.protocol }}
+    targetPort: {{ .Values.service.controlcenter.http.targetPort }}
+  type: ClusterIP

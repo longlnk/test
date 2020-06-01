@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.ksqldbserver.name }}
+  labels:
+    app: {{ .Values.ksqldbserver.name }}
+    workload.user.cattle.io/workloadselector: deployment-{{.Release.Namespace}}-{{ .Values.ksqldbserver.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.ksqldbserver.name }}
+      workload.user.cattle.io/workloadselector: deployment-{{.Release.Namespace}}-{{ .Values.ksqldbserver.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.ksqldbserver.name }}
+        workload.user.cattle.io/workloadselector: deployment-{{.Release.Namespace}}-{{ .Values.ksqldbserver.name }}
+    spec:
+      containers:
+      - name: {{ .Values.ksqldbserver.name }}
+        image: "{{ .Values.ksqldbserver.image.repository }}:{{ .Values.ksqldbserver.image.tag }}"
+        imagePullPolicy: {{ .Values.ksqldbserver.image.pullPolicy }}
+        env:
+          - name: KSQL_CONFIG_DIR
+            value: {{ .Values.environment.ksqldbserver.KSQLCONFIGDIR.value }}
+          - name: KSQL_BOOTSTRAP_SERVERS
+            value: {{ .Values.environment.ksqldbserver.KSQLBOOTSTRAPSERVERS.value }}
+          - name: KSQL_HOST_NAME
+            value: {{ .Values.environment.ksqldbserver.KSQLHOSTNAME.value }}
+          - name: KSQL_LISTENERS
+            value: {{ .Values.environment.ksqldbserver.KSQLLISTENERS.value }}
+          - name: KSQL_CACHE_MAX_BYTES_BUFFERING
+            value: {{ .Values.environment.ksqldbserver.KSQLCACHEMAXBYTESBUFFERING.value }}
+          - name: KSQL_KSQL_SCHEMA_REGISTRY_URL
+            value: {{ .Values.environment.ksqldbserver.KSQLKSQLSCHEMAREGISTRYURL.value }}
+          - name: KSQL_PRODUCER_INTERCEPTOR_CLASSES
+            value: {{ .Values.environment.ksqldbserver.KSQLPRODUCERINTERCEPTORCLASSES.value }}
+          - name: KSQL_CONSUMER_INTERCEPTOR_CLASSES
+            value: {{ .Values.environment.ksqldbserver.KSQLCONSUMERINTERCEPTORCLASSES.value }}
+          - name: KSQL_KSQL_CONNECT_URL
+            value: {{ .Values.environment.ksqldbserver.KSQLKSQLCONNECTURL.value }}         

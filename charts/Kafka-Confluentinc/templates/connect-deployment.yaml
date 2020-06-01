@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.connect.name }}
+  labels:
+    app: {{ .Values.connect.name }}
+    workload.user.cattle.io/workloadselector: deployment-{{.Release.Namespace}}-{{ .Values.connect.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.connect.name }}
+      workload.user.cattle.io/workloadselector: deployment-{{.Release.Namespace}}-{{ .Values.connect.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.connect.name }}
+        workload.user.cattle.io/workloadselector: deployment-{{.Release.Namespace}}-{{ .Values.connect.name }}
+    spec:
+      containers:
+      - name: {{ .Values.connect.name }}
+        image: "{{ .Values.connect.image.repository }}:{{ .Values.connect.image.tag }}"
+        imagePullPolicy: {{ .Values.connect.image.pullPolicy }}
+        env:
+          - name: CONNECT_BOOTSTRAP_SERVERS
+            value: {{ .Values.environment.connect.CONNECTBOOTSTRAPSERVERS.value }}
+          - name: CONNECT_REST_ADVERTISED_HOST_NAME
+            value: {{ .Values.environment.connect.CONNECTRESTADVERTISEDHOSTNAME.value }}
+          - name: CONNECT_REST_PORT
+            value: {{ .Values.environment.connect.CONNECTRESTPORT.value }}
+          - name: CONNECT_GROUP_ID
+            value: {{ .Values.environment.connect.CONNECTGROUPID.value }}
+          - name: CONNECT_CONFIG_STORAGE_TOPIC
+            value: {{ .Values.environment.connect.CONNECTCONFIGSTORAGETOPIC.value }}
+          - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+            value: {{ .Values.environment.connect.CONNECTCONFIGSTORAGEREPLICATIONFACTOR.value }}
+          - name: CONNECT_OFFSET_FLUSH_INTERVAL_MS
+            value: {{ .Values.environment.connect.CONNECTOFFSETFLUSHINTERVALMS.value }}
+          - name: CONNECT_OFFSET_STORAGE_TOPIC
+            value: {{ .Values.environment.connect.CONNECTOFFSETSTORAGETOPIC.value }}
+          - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+            value: {{ .Values.environment.connect.CONNECTOFFSETSTORAGEREPLICATIONFACTOR.value }}
+          - name: CONNECT_STATUS_STORAGE_TOPIC
+            value: {{ .Values.environment.connect.CONNECTSTATUSSTORAGETOPIC.value }}
+          - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+            value: {{ .Values.environment.connect.CONNECTSTATUSSTORAGEREPLICATIONFACTOR.value }}
+          - name: CONNECT_KEY_CONVERTER
+            value: {{ .Values.environment.connect.CONNECTKEYCONVERTER.value }}    
+          - name: CONNECT_VALUE_CONVERTER
+            value: {{ .Values.environment.connect.CONNECTVALUECONVERTER.value }}
+          - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+            value: {{ .Values.environment.connect.CONNECTVALUECONVERTERSCHEMAREGISTRYURL.value }}
+          - name: CONNECT_INTERNAL_KEY_CONVERTER
+            value: {{ .Values.environment.connect.CONNECTINTERNALKEYCONVERTER.value }}
+          - name: CONNECT_INTERNAL_VALUE_CONVERTER
+            value: {{ .Values.environment.connect.CONNECTINTERNALVALUECONVERTER.value }}
+          - name: CONNECT_ZOOKEEPER_CONNECT
+            value: {{ .Values.environment.connect.CONNECTZOOKEEPERCONNECT.value }}
+          - name: CLASSPATH
+            value: {{ .Values.environment.connect.CLASSPATH.value }}
+          - name: CONNECT_PRODUCER_INTERCEPTOR_CLASSES
+            value: {{ .Values.environment.connect.CONNECTPRODUCERINTERCEPTORCLASSES.value }}
+          - name: CONNECT_CONSUMER_INTERCEPTOR_CLASSES
+            value: {{ .Values.environment.connect.CONNECTCONSUMERINTERCEPTORCLASSES.value }}
+          - name: CONNECT_PLUGIN_PATH
+            value: {{ .Values.environment.connect.CONNECTPLUGINPATH.value }}
+          - name: CONNECT_LOG4J_LOGGERS
+            value: {{ .Values.environment.connect.CONNECTLOG4JLOGGERS.value }}        
